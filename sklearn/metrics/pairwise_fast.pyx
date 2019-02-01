@@ -10,9 +10,9 @@
 from libc.string cimport memset
 import numpy as np
 cimport numpy as np
+from cython cimport floating
 
-cdef extern from "cblas.h":
-    double cblas_dasum(int, const double *, int) nogil
+from ..utils._cython_blas cimport _asum
 
 ctypedef float [:, :] float_array_2d_t
 ctypedef double [:, :] double_array_2d_t
@@ -76,4 +76,4 @@ def _sparse_manhattan(floating1d X_data, int[:] X_indices, int[:] X_indptr,
                 for j in range(Y_indptr[iy], Y_indptr[iy + 1]):
                     row[Y_indices[j]] -= Y_data[j]
 
-                D[ix, iy] = cblas_dasum(n_features, &row[0], 1)
+                D[ix, iy] = _asum(n_features, &row[0], 1)
